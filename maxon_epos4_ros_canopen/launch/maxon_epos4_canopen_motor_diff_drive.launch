@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<!-- Example launch file for diff drive controller using Profile Velocity Mode -->
+<launch>
+
+	<!--group ns="/maxon"-->
+
+		<!-- Load the URDF into ROS parameter server -->
+		<param name="robot_description" command="$(find xacro)/xacro '$(find maxon_epos4_ros_canopen)/urdf/maxon_epos4_diff_drive.xacro'"/>
+
+		<!-- Run the canopen_motor_node with parameters defined in config files -->
+		<node name="canopen_motor" pkg="canopen_motor_node" type="canopen_motor_node" output="screen" clear_params="true" > 
+			<rosparam command="load" file="$(find maxon_epos4_ros_canopen)/config/canopen_bus_layer.yaml" />
+			<rosparam command="load" file="$(find maxon_epos4_ros_canopen)/config/controller_diff_drive.yaml" />
+			<rosparam command="load" file="$(find maxon_epos4_ros_canopen)/config/node_layer_diff_drive.yaml" />
+			<!-- rosparam command="load" file="$(find maxon_epos4_ros_canopen)/config/ros_layer.yaml" /-->
+			<remap from="/canopen_motor/diff_drive_controller/odom" to="odom" />
+			<remap from="/canopen_motor/diff_drive_controller/cmd_vel" to="cmd_vel" />
+		</node>
+
+		<!-- Load the controllers -->
+		<node name="controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
+			output="screen" args="spawn 
+			/canopen_motor/joint_state_controller
+			/canopen_motor/diff_drive_controller
+			"/>
+
+		<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
+
+	<!--/group-->
+
+</launch>

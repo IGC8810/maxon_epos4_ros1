@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!-- maxon EPOS4 example with 2 DOF -->
+<robot name="maxon_epos4" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <!-- Base link -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="-0.15 0 0.08" rpy="0 0 0"/>
+      <geometry>
+        <box size=".44 .33 .12"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <!-- left wheel link -->
+  <link name="left_wheel_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 ${PI/2} ${PI/2}"/>
+      <geometry>
+        <cylinder length="0.03" radius="0.0725"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- Joint between Base link and left wheel link -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel_link"/>
+    <origin xyz="0 0.2 0.075" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <!--dynamics damping="0.7"/-->
+    <!--limit effort="100.0" velocity="1300"/-->
+  </joint>
+
+  <!-- right wheel Link -->
+  <link name="right_wheel_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 ${PI/2} ${PI/2}"/>
+      <geometry>
+        <cylinder length="0.03" radius="0.0725"/>
+      </geometry>
+    </visual>
+  </link>
+ 
+  <!-- Joint between Base link and right wheel link -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel_link"/>
+    <origin xyz="0 -0.2 0.075" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <!--dynamics damping="0.7"/-->
+    <!--limit effort="100.0" velocity="1300"/-->
+  </joint>
+
+  <transmission name="transmission_base_link1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_wheel_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_maxon_motor">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="transmission_base_link2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_wheel_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_maxon_motor">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+</robot>
