@@ -23,9 +23,9 @@ defaults: # optional, all defaults can be overwritten per node
   motor_allocator: canopen::Motor402::Allocator # select allocator for motor layer
 #   motor_layer: settings passed to motor layer (plugin-specific)
   switching_state: 2 # (Operation_Enable), state for mode switching. Drive mode of operation from canopen_402 wiki
-  pos_to_device: "pos" # inc 
-  pos_from_device: "obj6064" # inc 
-  vel_to_device: "vel" # rpm
-  vel_from_device: "obj606C" # rpm 
+  pos_to_device: "rint(rad2deg(pos)*14.2)" # inc 
+  pos_from_device: "deg2rad(obj6064/14.2)" # 
+  vel_to_device: "rint(vel*60)" #
+  vel_from_device: "rint(obj606C/60)" # rpm 
   eff_to_device: "rint(eff)" # just round to integer
   eff_from_device: "0" # unset
